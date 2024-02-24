@@ -8,7 +8,7 @@ export default function Searches() {
     return (
         <ul>
              {searches?.map(({ _id, text, search_count }) => (
-                <li><div key={_id}>{text} searched {search_count} time(s)</div></li>
+                <li key={_id}><div>{text} searched {search_count} time(s)</div></li>
             ))}
         </ul>
     );
