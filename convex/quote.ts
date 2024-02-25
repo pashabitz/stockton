@@ -21,8 +21,8 @@ export const getQuote = httpAction(async (ctx, request: Request) =>{
     const json = await data.json();
     return new Response(JSON.stringify(json), {
         status: 200,
-        headers: new Headers({
-            "Access-Control-Allow-Origin": "*",
-          }),
+        // headers: new Headers({
+        //     "Access-Control-Allow-Origin": "*",
+        //   }),
     });
 });
