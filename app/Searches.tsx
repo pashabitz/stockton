@@ -6,9 +6,9 @@ import { api } from "../convex/_generated/api";
 export default function Searches() {
     const searches = useQuery(api.search.get, {});
     return (
-        <ul>
+        <ul className="space-y-1 py-2">
              {searches?.map(({ _id, text, search_count, price }) => (
-                <li key={_id}><div>{text} searched {search_count} time(s) - last price is {price ?? "unknown"}</div></li>
+                <li key={_id}><div>{text.toUpperCase()} searched {search_count} time(s) - last price is {price ?? "unknown"}</div></li>
             ))}
         </ul>
     );

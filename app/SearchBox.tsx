@@ -27,13 +27,14 @@ export default function SearchBox() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-4">
         <input
             type="search"
-            placeholder="Search for stocks"
+            placeholder="AAPL, TSLA, etc."
             value={search}
-            onChange={handleChange} />
-        <button type="submit">Search</button>
+            onChange={handleChange} 
+            className="w-full p-2"/>
+        <button type="submit" className="w-full rounded border-2 p-2">Search</button>
         </form>
     );
 }
