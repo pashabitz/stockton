@@ -14,6 +14,8 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as http from "../http.js";
+import type * as quote from "../quote.js";
 import type * as search from "../search.js";
 
 /**
@@ -25,6 +27,8 @@ import type * as search from "../search.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  http: typeof http;
+  quote: typeof quote;
   search: typeof search;
 }>;
 export declare const api: FilterApi<
