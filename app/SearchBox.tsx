@@ -33,7 +33,7 @@ export default function SearchBox() {
             placeholder="AAPL, TSLA, etc."
             value={search}
             onChange={handleChange} 
-            className="w-full p-2"/>
+            className="w-full p-2 text-black"/>
         <button type="submit" className="w-full rounded border-2 p-2">Search</button>
         </form>
     );
