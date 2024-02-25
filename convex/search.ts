@@ -1,4 +1,4 @@
-import { query, mutation } from "./_generated/server";
+import { query, mutation, internalMutation } from "./_generated/server";
 import { v } from "convex/values";
 
 export const get = query({
@@ -28,6 +28,24 @@ export const updateSearch = mutation({
     } else {
       // Create new record
       await ctx.db.insert("search", { text: lowercaseText, search_count: 1 });
+    }
+  },
+});
+
+export const updateSearchPrice = internalMutation({
+  args: { text: v.string(), price: v.number() },
+  handler: async (ctx, args) => {
+    const lowercaseText = args.text.toLowerCase();
+    // Get existing record
+    const existingRecord = await ctx.db
+      .query("search")
+      .filter((q) => q.eq(q.field("text"), lowercaseText))
+      .collect();
+    if (existingRecord.length > 0) {
+      const record = existingRecord[0];
+      await ctx.db.patch(record._id, {
+        price: args.price,
+      });
     }
   },
 });
