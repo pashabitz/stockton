@@ -10,13 +10,16 @@ function finnhubUrl(queryString: string) {
       process.env.FINNHUB_KEY
     );
   }
+async function getQuoteFromFinnhub(ticker: string) {
+    const queryString = `quote?symbol=${ticker}`;
+    const response = await fetch(finnhubUrl(queryString));
+    return await response.json();
+}
 
 export const getQuote = action({
     args: { ticker: v.string() },
     handler: async (ctx, args) => {
-        const queryString = `quote?symbol=${args.ticker}`;
-        const data = await fetch(finnhubUrl(queryString));
-        const json = await data.json();
+        const json = await getQuoteFromFinnhub(args.ticker);
         await ctx.runMutation(internal.search.updateSearchPrice, {
             text: args.ticker,
             price: json.c,
