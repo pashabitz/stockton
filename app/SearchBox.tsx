@@ -1,12 +1,13 @@
 'use client';
 // component rendering a search box
 import React from 'react';
-import { useMutation } from "convex/react";
+import { useAction, useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
 
 export default function SearchBox() {
     const [search, setSearch] = React.useState("");
     const updateSearch = useMutation(api.search.updateSearch);
+    const getQuote = useAction(api.quote.getQuoteAction);
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         setSearch(event.currentTarget.value);
@@ -18,10 +19,8 @@ export default function SearchBox() {
         console.log(`Search for ${search}`);
         updateSearch({ text: search });
 
-        // get quote data - await response
-        const quoteResponse = await fetch(`${process.env.NEXT_PUBLIC_CONVEX_ACTIONS_URL}/quote?ticket=${search}`);
-        const quoteData = await quoteResponse.json();
-        console.log(quoteData);
+        getQuote({ ticker: search });
+
         setSearch("");
 
     }
