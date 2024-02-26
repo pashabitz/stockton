@@ -11,7 +11,7 @@ function finnhubUrl(queryString: string) {
     );
   }
 
-export const getQuoteAction = action({
+export const getQuote = action({
     args: { ticker: v.string() },
     handler: async (ctx, args) => {
         const queryString = `quote?symbol=${args.ticker}`;

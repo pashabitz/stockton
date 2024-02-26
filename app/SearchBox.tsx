@@ -7,7 +7,7 @@ import { api } from "../convex/_generated/api";
 export default function SearchBox() {
     const [search, setSearch] = React.useState("");
     const updateSearch = useMutation(api.search.updateSearch);
-    const getQuote = useAction(api.quote.getQuoteAction);
+    const getQuote = useAction(api.quote.getQuote);
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         setSearch(event.currentTarget.value);
