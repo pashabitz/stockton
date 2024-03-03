@@ -27,3 +27,19 @@ export const getQuote = action({
         return json;
     }
 });
+
+
+
+export const getBasicStats = action({
+    args: { ticker: v.string() },
+    handler: async (ctx, args) => {
+        const queryString = `/stock/metric?symbol=${args.ticker}&metric=all`;
+        const response = await fetch(finnhubUrl(queryString));
+        const json = await response.json();
+        await ctx.runMutation(internal.search.updateBasicStats, {
+            text: args.ticker,
+            stats: json,
+        });
+        return json;
+    }
+});

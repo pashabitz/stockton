@@ -49,3 +49,21 @@ export const updateSearchPrice = internalMutation({
     }
   },
 });
+
+export const updateBasicStats = internalMutation({
+  args: { text: v.string(), stats: v.any() },
+  handler: async (ctx, args) => {
+    const lowercaseText = args.text.toLowerCase();
+    // Get existing record
+    const existingRecord = await ctx.db
+      .query("search")
+      .filter((q) => q.eq(q.field("text"), lowercaseText))
+      .collect();
+    if (existingRecord.length > 0) {
+      const record = existingRecord[0];
+      await ctx.db.patch(record._id, {
+        stats: args.stats,
+      });
+    }
+  },
+}); 
