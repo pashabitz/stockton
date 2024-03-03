@@ -14,7 +14,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as crons from ../crons.jsjs";
+import type * as crons from "../crons.js";
 import type * as http from "../http.js";
 import type * as quote from "../quote.js";
 import type * as search from "../search.js";
