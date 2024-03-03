@@ -8,6 +8,16 @@ export const get = query({
   },
 });
 
+export const getLeastRecentlyUpdated = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db
+      .query("search")
+      .withIndex("by_updatedAt")
+      .take(5);
+  },
+});
+
 
 // Log a search
 export const updateSearch = mutation({
@@ -45,6 +55,7 @@ export const updateSearchPrice = internalMutation({
       const record = existingRecord[0];
       await ctx.db.patch(record._id, {
         price: args.price,
+        updatedAt: new Date().valueOf()
       });
     }
   },
@@ -63,6 +74,7 @@ export const updateBasicStats = internalMutation({
       const record = existingRecord[0];
       await ctx.db.patch(record._id, {
         stats: args.stats,
+        updatedAt: new Date().valueOf()
       });
     }
   },
