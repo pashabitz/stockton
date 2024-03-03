@@ -1,6 +1,6 @@
 import { v } from "convex/values";
-import { internal } from "./_generated/api";
-import { action } from "./_generated/server";
+import { api, internal } from "./_generated/api";
+import { action, internalAction } from "./_generated/server";
 
 function finnhubUrl(queryString: string) {
     return (
@@ -43,3 +43,17 @@ export const getBasicStats = action({
         return json;
     }
 });
+
+export const refreshPrice = internalAction({
+    args: {},
+    handler: async (ctx) => {
+        const records = await ctx.runQuery(api.search.getLeastRecentlyUpdated);
+        await Promise.all(records.map(async (record) => {
+            const json = await getQuoteFromFinnhub(record.text);
+            await ctx.runMutation(internal.search.updateSearchPrice, {
+                text: record.text,
+                price: json.c
+            });
+        }));
+    }
+})
