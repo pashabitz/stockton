@@ -3,10 +3,10 @@ import { internal } from "./_generated/api";
 
 const crons = cronJobs();
 
-crons.interval(
-    "refreshPrice",
-    { hours: 12 },
-    internal.quote.refreshPrice,
-)
+// crons.interval(
+//     "refreshPrice",
+//     { hours: 12 },
+//     internal.quote.refreshPrice,
+// )
 
 export default crons;
