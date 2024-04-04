@@ -1,20 +1,22 @@
 'use client';
 
 import { api } from "@/convex/_generated/api"
-import { useAction } from "convex/react"
+import { useAction, useQuery } from "convex/react"
 import { get } from "http";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function Page({ params }: { params: { symbol: string } }) {
-    const getBasicStats = useAction(api.quote.getBasicStats);
-    const [stats, setStats] = React.useState(null);
-   
-    useEffect(() => {
-        getBasicStats({ ticker: params.symbol }).then(setStats);
-    }, []);
+    const symbol = useQuery(api.symbol.get, { symbol: params.symbol });
     return <div>
-        <h2>Symbol: {params.symbol}</h2>
-        {stats && <pre>{JSON.stringify(stats, null, 2)}</pre>}
+        <h1>{params.symbol.toUpperCase()}</h1>
+        {symbol && symbol.stats && 
+        <table>
+            {Object.keys(symbol.stats.metric).map((m: string) => <tr>
+                <th>{m}</th>
+                <th>{symbol.stats.metric[m]}</th>
+            </tr>)}
+        </table>
+        }
     </div>
 
   }

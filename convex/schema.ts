@@ -11,4 +11,9 @@ export default defineSchema({
     text: v.string(),
     updatedAt: v.optional(v.union(v.float64(), v.string())),
   }).index("by_updatedAt", ["updatedAt"]),
+
+  symbol: defineTable({
+    symbol: v.string(),
+    stats: v.optional(v.any()),
+  }).index("by_symbol", ["symbol"]),
 });
