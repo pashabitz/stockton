@@ -24,11 +24,12 @@ export const getQuote = action({
             text: args.ticker,
             price: json.c,
         });
+        await ctx.scheduler.runAfter(0, internal.quote.refreshBasicStatsIfStale, {
+            ticker: args.ticker
+        });
         return json;
     }
 });
-
-
 
 export const getBasicStats = action({
     args: { ticker: v.string() },
@@ -41,6 +42,18 @@ export const getBasicStats = action({
             stats: json,
         });
         return json;
+    }
+});
+
+export const refreshBasicStatsIfStale = internalAction({
+    args: {ticker: v.string() },
+    handler: async (ctx, args) => {
+        const dayAgo = Date.now() - (1000 * 60 * 60 * 24);
+        const symbol = await ctx.runQuery(api.symbol.get, { symbol: args.ticker });
+        if (!symbol || !symbol.updatedAt || symbol.updatedAt < dayAgo) {
+            await ctx.runAction(api.quote.getBasicStats, { ticker: args.ticker })
+        } else {
+        }
     }
 });
 

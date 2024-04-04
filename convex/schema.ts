@@ -15,5 +15,6 @@ export default defineSchema({
   symbol: defineTable({
     symbol: v.string(),
     stats: v.optional(v.any()),
+    updatedAt: v.optional(v.float64()),
   }).index("by_symbol", ["symbol"]),
 });

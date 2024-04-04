@@ -67,8 +67,8 @@ export const updateBasicStats = internalMutation({
     const lowercaseText = args.text.toLowerCase();
     // Get existing record
     const existingRecord = await ctx.db
-      .query("search")
-      .filter((q) => q.eq(q.field("text"), lowercaseText))
+      .query("symbol")
+      .filter((q) => q.eq(q.field("symbol"), lowercaseText))
       .collect();
     if (existingRecord.length > 0) {
       const record = existingRecord[0];
@@ -76,6 +76,12 @@ export const updateBasicStats = internalMutation({
         stats: args.stats,
         updatedAt: new Date().valueOf()
       });
+    } else {
+      ctx.db.insert("symbol", {
+        symbol: lowercaseText,
+        updatedAt: new Date().valueOf(),
+        stats: args.stats,
+      })
     }
   },
 }); 
