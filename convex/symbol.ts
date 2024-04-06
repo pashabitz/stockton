@@ -8,7 +8,7 @@ export const get = query({
     },
     handler: async (ctx, args) => {
         return await ctx.db.query("symbol")
-            .filter((q) => q.eq(q.field("symbol"), args.symbol))
+            .filter((q) => q.eq(q.field("symbol"), args.symbol.toLocaleLowerCase()))
             .unique();
     },
 });
