@@ -28,7 +28,7 @@ export const refreshStaleSymbols = internalAction({
     handler: async (ctx, args) => {
         const symbols = await ctx.runQuery(api.symbol.getStale)       
         for (let i = 0 ; i < symbols.length; i++ ) {
-            await ctx.runAction(internal.quote.refreshBasicStatsIfStale, { ticker: symbols[i].symbol });
+            await ctx.runAction(api.quote.refreshBasicStatsIfStale, { ticker: symbols[i].symbol });
         }            
     }
 });  
