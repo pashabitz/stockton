@@ -16,5 +16,6 @@ export default defineSchema({
     symbol: v.string(),
     stats: v.optional(v.any()),
     updatedAt: v.optional(v.float64()),
-  }).index("by_symbol", ["symbol"]),
+  }).index("by_symbol", ["symbol"])
+  .index("by_updatedAt", ["updatedAt"]),
 });

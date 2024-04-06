@@ -1,5 +1,6 @@
 import { v } from "convex/values";
-import { query } from "./_generated/server";
+import { internalAction, query } from "./_generated/server";
+import { api, internal } from "./_generated/api";
 
 export const get = query({
     args: {
@@ -11,3 +12,23 @@ export const get = query({
             .unique();
     },
 });
+
+export const getStale = query({
+    args: {},
+    handler: async (ctx, args) => {
+        return await ctx.db.query("symbol")
+            .withIndex("by_updatedAt")
+            .order("asc")
+            .take(2)
+    },
+});
+
+export const refreshStaleSymbols = internalAction({
+    args: {},
+    handler: async (ctx, args) => {
+        const symbols = await ctx.runQuery(api.symbol.getStale)       
+        for (let i = 0 ; i < symbols.length; i++ ) {
+            await ctx.runAction(internal.quote.refreshBasicStatsIfStale, { ticker: symbols[i].symbol });
+        }            
+    }
+});  

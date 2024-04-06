@@ -31,7 +31,7 @@ export const getQuote = action({
     }
 });
 
-export const getBasicStats = action({
+export const getBasicStatsFromApi = action({
     args: { ticker: v.string() },
     handler: async (ctx, args) => {
         const queryString = `/stock/metric?symbol=${args.ticker}&metric=all`;
@@ -51,7 +51,7 @@ export const refreshBasicStatsIfStale = internalAction({
         const dayAgo = Date.now() - (1000 * 60 * 60 * 24);
         const symbol = await ctx.runQuery(api.symbol.get, { symbol: args.ticker });
         if (!symbol || !symbol.updatedAt || symbol.updatedAt < dayAgo) {
-            await ctx.runAction(api.quote.getBasicStats, { ticker: args.ticker })
+            await ctx.runAction(api.quote.getBasicStatsFromApi, { ticker: args.ticker })
         } else {
         }
     }
