@@ -26,9 +26,9 @@ export const getStale = query({
 export const refreshStaleSymbols = internalAction({
     args: {},
     handler: async (ctx, args) => {
-        const symbols = await ctx.runQuery(api.symbol.getStale)       
-        for (let i = 0 ; i < symbols.length; i++ ) {
-            await ctx.runAction(api.quote.refreshBasicStatsIfStale, { ticker: symbols[i].symbol });
+        const symbols = await ctx.runQuery(api.symbol.getStale);
+        for (const s of symbols) {
+            await ctx.runAction(api.quote.refreshBasicStatsIfStale, { ticker: s.symbol });
         }            
     }
 });  
