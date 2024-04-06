@@ -24,7 +24,7 @@ export const getQuote = action({
             text: args.ticker,
             price: json.c,
         });
-        await ctx.scheduler.runAfter(0, internal.quote.refreshBasicStatsIfStale, {
+        await ctx.scheduler.runAfter(0, api.quote.refreshBasicStatsIfStale, {
             ticker: args.ticker
         });
         return json;
@@ -45,7 +45,7 @@ export const getBasicStatsFromApi = action({
     }
 });
 
-export const refreshBasicStatsIfStale = internalAction({
+export const refreshBasicStatsIfStale = action({
     args: {ticker: v.string() },
     handler: async (ctx, args) => {
         const dayAgo = Date.now() - (1000 * 60 * 60 * 24);
