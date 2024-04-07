@@ -14,7 +14,7 @@ export const getLeastRecentlyUpdated = query({
     return await ctx.db
       .query("search")
       .withIndex("by_updatedAt")
-      .take(5);
+      .take(2);
   },
 });
 
@@ -58,6 +58,10 @@ export const updateSearchPrice = internalMutation({
         updatedAt: new Date().valueOf()
       });
     }
+    ctx.db.insert("price", {
+      symbol: lowercaseText,
+      price: args.price
+    });
   },
 });
 

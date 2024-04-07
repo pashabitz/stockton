@@ -18,4 +18,9 @@ export default defineSchema({
     updatedAt: v.optional(v.float64()),
   }).index("by_symbol", ["symbol"])
   .index("by_updatedAt", ["updatedAt"]),
+
+  price: defineTable({
+    symbol: v.string(),
+    price: v.float64(),
+  }).index("by_symbol", ["symbol"]),
 });
