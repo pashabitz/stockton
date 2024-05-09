@@ -7,12 +7,12 @@ crons.interval(
     "Refresh Stats",
     { hours: 8 },
     internal.symbol.refreshStaleSymbols,
-)
+);
 
-crons.interval(
+crons.cron(
     "Refresh Prices",
-    { hours: 2 },
+    "0,20,40 14-20 * * *",
     internal.quote.refreshPrice,
-)
+);
 
 export default crons;
