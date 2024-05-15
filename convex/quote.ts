@@ -62,6 +62,7 @@ export const refreshPrice = internalAction({
     handler: async (ctx) => {
         const records = await ctx.runQuery(api.search.getLeastRecentlyUpdated);
         await Promise.all(records.map(async (record) => {
+            console.log(`Refreshing price for ${record.text}`);
             const json = await getQuoteFromFinnhub(record.text);
             await ctx.runMutation(internal.search.updateSearchPrice, {
                 text: record.text,

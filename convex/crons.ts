@@ -11,7 +11,7 @@ crons.interval(
 
 crons.cron(
     "Refresh Prices",
-    "0,20,40 14-20 * * *",
+    "0,30 14-20 * * 1-5",
     internal.quote.refreshPrice,
 );
 
