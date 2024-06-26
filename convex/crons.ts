@@ -9,9 +9,10 @@ crons.interval(
     internal.symbol.refreshStaleSymbols,
 );
 
+// comment
 crons.cron(
     "Refresh Prices",
-    "0,30 14-20 * * 1-5",
+    "35 15-17 * * 1-5",
     internal.quote.refreshPrice,
 );
 
