@@ -55,7 +55,7 @@ export const updateSearchPrice = internalMutation({
       const record = existingRecord[0];
       await ctx.db.patch(record._id, {
         price: args.price,
-        updatedAt: new Date().valueOf()
+        updatedAt: new Date().valueOf(),
       });
     }
     ctx.db.insert("price", {

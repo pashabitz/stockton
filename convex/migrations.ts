@@ -11,3 +11,11 @@ export const moveDataFromSearchToSymbol = internalMutation(async ({db}) => {
     }
   });
   
+  export const makeSearchUpdatedAtOneType = internalMutation(async ({db}) => {
+    const searches = await db.query("search").collect();
+    const yesterdayDate = new Date().valueOf() - 86400000;
+    for (const search of searches) {
+        console.log(search.text);
+        await db.patch(search._id, { updatedAt: yesterdayDate });
+    }
+  });

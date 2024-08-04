@@ -16,6 +16,21 @@ async function getQuoteFromFinnhub(ticker: string) {
     return await response.json();
 }
 
+function fmpUrl(queryString: string) {
+    return (
+      "https://financialmodelingprep.com/api/v3/quote-short/" +
+      queryString +
+      "?apikey=" + process.env.FMP_KEY
+    );
+}
+
+async function getQuoteFromFmp(ticker: string) {
+    const url = fmpUrl(ticker);
+    console.log(url);
+    const response = await fetch(url);
+    return await response.json();
+};
+
 export const getQuote = action({
     args: { ticker: v.string() },
     handler: async (ctx, args) => {
@@ -63,10 +78,10 @@ export const refreshPrice = internalAction({
         const records = await ctx.runQuery(api.search.getLeastRecentlyUpdated);
         await Promise.all(records.map(async (record) => {
             console.log(`Refreshing price for ${record.text}`);
-            const json = await getQuoteFromFinnhub(record.text);
+            const json = await getQuoteFromFmp(record.text);
             await ctx.runMutation(internal.search.updateSearchPrice, {
                 text: record.text,
-                price: json.c
+                price: json[0].price
             });
         }));
     }
