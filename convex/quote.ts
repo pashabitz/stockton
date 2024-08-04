@@ -18,21 +18,27 @@ async function getQuoteFromFinnhub(ticker: string) {
 
 function fmpUrl(queryString: string) {
     return (
-      "https://financialmodelingprep.com/api/v3/quote-short/" +
+      "https://financialmodelingprep.com/api/v3/" +
       queryString +
       "?apikey=" + process.env.FMP_KEY
     );
 }
 
 async function getQuoteFromFmp(ticker: string) {
-    const url = fmpUrl(ticker);
+    const url = fmpUrl(`quote-short/${ticker}`);
     console.log(url);
     const response = await fetch(url);
     return await response.json();
 };
 
 async function getMultiQuoteFromFmp(tickers: string[]) {
-    const url = fmpUrl(tickers.join(","));
+    const url = fmpUrl(`quote-short/${tickers.join(",")}`);
+    const response = await fetch(url);
+    return await response.json();
+}
+
+async function getPriceChanges(tickers: string[]) {
+    const url = fmpUrl(`stock-price-change/${tickers.join(",")}`);
     const response = await fetch(url);
     return await response.json();
 }
@@ -85,16 +91,38 @@ export const refreshPrice = internalAction({
         const tickers = records.map((record) => record.text);
         console.log(`Refreshing prices for ${tickers}`);
         const quotes = await getMultiQuoteFromFmp(tickers);
-        await Promise.all(quotes.map(async (quote: {
-            symbol: string;
-            price: number;
-            volume: number;
-        }) => {
-            console.log(`updating price for ${quote.symbol} to ${quote.price}`);
-            return ctx.runMutation(internal.search.updateSearchPrice, {
+        for (let i = 0; i < quotes.length; i++) {
+            let quote = quotes[i];
+            await ctx.runMutation(internal.search.updateSearchPrice, {
                 text: quote.symbol,
                 price: quote.price
             });
-        }));
+        };
     }
-})
+});
+
+export const refreshPriceChanges = internalAction({
+    args: {},
+    handler: async (ctx) => {
+        const tickers = await ctx.runQuery(api.search.get);
+        console.log(`Refreshing price change for ${tickers}`);
+        const priceChanges = await getPriceChanges(tickers.map((ticker) => ticker.text));
+        for (let i = 0; i < priceChanges.length; i++) {
+            let priceChange = priceChanges[i];
+            await ctx.runMutation(internal.search.insertPriceChange, {
+                symbol: priceChange.symbol,
+                d1: priceChange["1D"],
+                d5: priceChange["5D"],
+                m1: priceChange["1M"],
+                m3: priceChange["3M"],
+                m6: priceChange["6M"],
+                ytd: priceChange["ytd"],
+                y1: priceChange["1Y"],
+                y3: priceChange["3Y"],
+                y5: priceChange["5Y"],
+                y10: priceChange["10Y"],
+                max: priceChange["max"],
+            });
+        }
+    }
+});

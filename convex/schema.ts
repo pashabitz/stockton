@@ -23,4 +23,19 @@ export default defineSchema({
     symbol: v.string(),
     price: v.float64(),
   }).index("by_symbol", ["symbol"]),
+
+  priceChange: defineTable({
+    symbol: v.string(),
+    d1: v.number(),
+    d5: v.number(),
+    m1: v.number(),
+    m3: v.number(),
+    m6: v.number(),
+    ytd: v.number(),
+    y1: v.number(),
+    y3: v.number(),
+    y5: v.number(),
+    y10: v.number(),
+    max: v.number(),
+  }).index("by_symbol", ["symbol"])
 });

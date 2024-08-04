@@ -16,4 +16,10 @@ crons.cron(
     internal.quote.refreshPrice,
 );
 
+crons.cron(
+    "Refresh Price Changes",
+    "0 18 * * 1-5",
+    internal.quote.refreshPriceChanges,
+);
+
 export default crons;

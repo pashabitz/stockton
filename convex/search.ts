@@ -65,6 +65,30 @@ export const updateSearchPrice = internalMutation({
   },
 });
 
+export const insertPriceChange = internalMutation({
+  args: { 
+    symbol: v.string(), 
+    d1: v.number(),
+    d5: v.number(),
+    m1: v.number(),
+    m3: v.number(),
+    m6: v.number(),
+    ytd: v.number(),
+    y1: v.number(),
+    y3: v.number(),
+    y5: v.number(),
+    y10: v.number(),
+    max: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const lowercaseText = args.symbol.toLowerCase();
+    await ctx.db.insert("priceChange", {
+      ...args,
+      symbol: lowercaseText,
+    });
+  },
+});
+
 export const updateBasicStats = internalMutation({
   args: { text: v.string(), stats: v.any() },
   handler: async (ctx, args) => {
