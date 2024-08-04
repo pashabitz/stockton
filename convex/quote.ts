@@ -31,6 +31,12 @@ async function getQuoteFromFmp(ticker: string) {
     return await response.json();
 };
 
+async function getMultiQuoteFromFmp(tickers: string[]) {
+    const url = fmpUrl(tickers.join(","));
+    const response = await fetch(url);
+    return await response.json();
+}
+
 export const getQuote = action({
     args: { ticker: v.string() },
     handler: async (ctx, args) => {
@@ -76,12 +82,18 @@ export const refreshPrice = internalAction({
     args: {},
     handler: async (ctx) => {
         const records = await ctx.runQuery(api.search.getLeastRecentlyUpdated);
-        await Promise.all(records.map(async (record) => {
-            console.log(`Refreshing price for ${record.text}`);
-            const json = await getQuoteFromFmp(record.text);
-            await ctx.runMutation(internal.search.updateSearchPrice, {
-                text: record.text,
-                price: json[0].price
+        const tickers = records.map((record) => record.text);
+        console.log(`Refreshing prices for ${tickers}`);
+        const quotes = await getMultiQuoteFromFmp(tickers);
+        await Promise.all(quotes.map(async (quote: {
+            symbol: string;
+            price: number;
+            volume: number;
+        }) => {
+            console.log(`updating price for ${quote.symbol} to ${quote.price}`);
+            return ctx.runMutation(internal.search.updateSearchPrice, {
+                text: quote.symbol,
+                price: quote.price
             });
         }));
     }
