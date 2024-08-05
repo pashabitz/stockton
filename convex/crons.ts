@@ -12,13 +12,13 @@ crons.interval(
 // comment
 crons.cron(
     "Refresh Prices",
-    "5,35 15-19 * * 1-5",
+    "*/10 13-20 * * 1-5",
     internal.quote.refreshPrice,
 );
 
 crons.cron(
     "Refresh Price Changes",
-    "0 18 * * 1-5",
+    "1 20 * * 1-5",
     internal.quote.refreshPriceChanges,
 );
 

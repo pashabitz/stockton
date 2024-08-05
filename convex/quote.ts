@@ -87,7 +87,7 @@ export const refreshBasicStatsIfStale = action({
 export const refreshPrice = internalAction({
     args: {},
     handler: async (ctx) => {
-        const records = await ctx.runQuery(api.search.getLeastRecentlyUpdated);
+        const records = await ctx.runQuery(api.search.get);
         const tickers = records.map((record) => record.text);
         console.log(`Refreshing prices for ${tickers}`);
         const quotes = await getMultiQuoteFromFmp(tickers);
@@ -105,8 +105,8 @@ export const refreshPriceChanges = internalAction({
     args: {},
     handler: async (ctx) => {
         const tickers = await ctx.runQuery(api.search.get);
-        console.log(`Refreshing price change for ${tickers}`);
         const priceChanges = await getPriceChanges(tickers.map((ticker) => ticker.text));
+        console.log(`Refreshing price change for ${priceChanges}`);
         for (let i = 0; i < priceChanges.length; i++) {
             let priceChange = priceChanges[i];
             await ctx.runMutation(internal.search.insertPriceChange, {
