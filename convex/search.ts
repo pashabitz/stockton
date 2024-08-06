@@ -121,7 +121,7 @@ export const insertFullQuote = internalMutation({
   },
 });
 
-export const getFullQuote = internalQuery({
+export const getFullQuote = query({
   args: { symbol: v.string() },
   handler: async (ctx, args) => {
     const lowercaseText = args.symbol.toLowerCase();

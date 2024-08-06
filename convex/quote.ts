@@ -129,7 +129,7 @@ export const refreshFullQuotes = internalAction({
 export const refreshFullQuoteIfStale = internalAction({
     args: { ticker: v.string() },
     handler: async (ctx, args) => {
-        const fullQuote = await ctx.runQuery(internal.search.getFullQuote, { symbol: args.ticker });
+        const fullQuote = await ctx.runQuery(api.search.getFullQuote, { symbol: args.ticker });
         if (!fullQuote) {
             const quotes = await getFullQuoteFromFmp([args.ticker]);
             if (quotes.length > 0) {
