@@ -1,4 +1,4 @@
-import { query, mutation, internalMutation } from "./_generated/server";
+import { query, mutation, internalMutation, internalQuery } from "./_generated/server";
 import { v } from "convex/values";
 
 export const get = query({
@@ -86,6 +86,51 @@ export const insertPriceChange = internalMutation({
       ...args,
       symbol: lowercaseText,
     });
+  },
+});
+
+export const insertFullQuote = internalMutation({
+  args: {
+    symbol: v.string(),
+    name: v.string(),
+    price: v.number(),
+    changesPercentage: v.number(),
+    change: v.number(),
+    dayLow: v.number(),
+    dayHigh: v.number(),
+    yearLow: v.number(),
+    yearHigh: v.number(),
+    marketCap: v.number(),
+    priceAvg50: v.number(),
+    priceAvg200: v.number(),
+    exchange: v.string(),
+    volume: v.number(),
+    avgVolume: v.number(),
+    open: v.number(),
+    previousClose: v.number(),
+    eps: v.number(),
+    pe: v.number(),
+    earningsAnnouncement: v.union(v.string(), v.null()),
+    sharesOutstanding: v.number(),
+    timestamp: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const inserted = {...args};
+    inserted.symbol = inserted.symbol.toLowerCase();
+    await ctx.db.insert("fullQuote", inserted);
+  },
+});
+
+export const getFullQuote = internalQuery({
+  args: { symbol: v.string() },
+  handler: async (ctx, args) => {
+    const lowercaseText = args.symbol.toLowerCase();
+    const fullQuote = await ctx.db
+      .query("fullQuote")
+      .withIndex("by_symbol", (q) => q.eq("symbol", lowercaseText))
+      .order("desc")
+      .first();
+    return fullQuote;
   },
 });
 

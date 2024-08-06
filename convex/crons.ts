@@ -1,5 +1,6 @@
 import { cronJobs } from "convex/server";
 import { internal } from "./_generated/api";
+import { refreshFullQuotes } from "./quote";
 
 const crons = cronJobs();
 
@@ -25,6 +26,11 @@ crons.cron(
     "Refresh Price Changes",
     "1 20 * * 1-5",
     internal.quote.refreshPriceChanges,
+);
+crons.cron(
+    "Refresh Full Quotes",
+    "2 20 * * 1-5",
+    internal.quote.refreshFullQuotes,
 );
 
 export default crons;

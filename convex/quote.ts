@@ -37,6 +37,12 @@ async function getMultiQuoteFromFmp(tickers: string[]) {
     return await response.json();
 }
 
+async function getFullQuoteFromFmp(tickers: string[]) {
+    const url = fmpUrl(`quote/${tickers.join(",")}`);
+    const response = await fetch(url);
+    return await response.json();
+}
+
 async function getPriceChanges(tickers: string[]) {
     const url = fmpUrl(`stock-price-change/${tickers.join(",")}`);
     const response = await fetch(url);
@@ -54,6 +60,11 @@ export const getQuote = action({
         await ctx.scheduler.runAfter(0, api.quote.refreshBasicStatsIfStale, {
             ticker: args.ticker
         });
+
+        await ctx.scheduler.runAfter(1, internal.quote.refreshFullQuoteIfStale, { 
+            ticker: args.ticker 
+        });
+
         return json;
     }
 });
@@ -98,6 +109,36 @@ export const refreshPrice = internalAction({
                 price: quote.price
             });
         };
+    }
+});
+
+export const refreshFullQuotes = internalAction({
+    args: {},
+    handler: async (ctx) => {
+        const records = await ctx.runQuery(api.search.get);
+        const tickers = records.map((record) => record.text);
+        console.log(`Refreshing full quotes for ${tickers}`);
+        const quotes = await getFullQuoteFromFmp(tickers);
+        for (let i = 0; i < quotes.length; i++) {
+            let quote = quotes[i];
+            await ctx.runMutation(internal.search.insertFullQuote, quote);
+        };
+    }
+});
+
+export const refreshFullQuoteIfStale = internalAction({
+    args: { ticker: v.string() },
+    handler: async (ctx, args) => {
+        const fullQuote = await ctx.runQuery(internal.search.getFullQuote, { symbol: args.ticker });
+        if (!fullQuote) {
+            const quotes = await getFullQuoteFromFmp([args.ticker]);
+            if (quotes.length > 0) {
+                await ctx.runMutation(internal.search.insertFullQuote, quotes[0]);
+            }
+
+            // TODO also refresh price changes; 
+            // but first - modify the signature of insert price chnage
+        }
     }
 });
 
