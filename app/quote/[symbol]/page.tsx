@@ -2,8 +2,8 @@
 
 import { api } from "@/convex/_generated/api"
 import { useAction, useQuery } from "convex/react"
-import { get } from "http";
 import React, { useEffect, useState } from "react";
+import { Line, LineChart, XAxis, YAxis } from "recharts";
 
 function formatLargeNumber(num: number): string {
     if (num > 1000000000) {
@@ -23,14 +23,46 @@ function formatAsDate(date: string | null): string {
     return dt.toLocaleDateString();
 }
 
+function PriceChart(params: { prices: Array<any>}) {
+    const prices = params.prices.map(p => {
+        let dt = new Date(p._creationTime);
+        
+        return {
+            ...p,
+            dt: dt.toLocaleString(),
+        };
+    }).reverse();
+    return <LineChart
+    data={prices} 
+    width={800} 
+    height={400}
+    >
+        <Line dataKey="price" type="monotone"></Line>
+        <XAxis
+        dataKey="dt"
+        />
+        <YAxis
+        type="number"
+        domain={[(dataMin: number) => dataMin * 0.9, (dataMax: number) => dataMax * 1.1]}
+        tickFormatter={(value: number) => "$" + value.toFixed(2)}
+        width={80}
+        />
+    </LineChart>
+}
 export default function Page({ params }: { params: { symbol: string } }) {
     const refresh = useAction(api.quote.refreshBasicStatsIfStale);
     useEffect(() => {
         refresh({ ticker: params.symbol });
     }, []);
     const fullQuote = useQuery(api.search.getFullQuote, { symbol: params.symbol });
+    const prices = useQuery(api.search.getSymbolPrices, { symbol: params.symbol });
     return <div>
         <h1>{params.symbol.toUpperCase()}</h1>
+        {prices ? (
+            <PriceChart prices={prices} />
+        ) : (
+            <p>Loading...</p>
+        )}
         {fullQuote ? (
             <table>
                 <tbody>

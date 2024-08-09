@@ -65,6 +65,18 @@ export const updateSearchPrice = internalMutation({
   },
 });
 
+export const getSymbolPrices = query({
+  args: { symbol: v.string() },
+  handler: async (ctx, args) => {
+    const lowercaseText = args.symbol.toLowerCase();
+    return await ctx.db
+      .query("price")
+      .withIndex("by_symbol", (q) => q.eq("symbol", lowercaseText))
+      .order("desc")
+      .take(24);
+  },
+});
+
 export const insertPriceChange = internalMutation({
   args: { 
     symbol: v.string(), 

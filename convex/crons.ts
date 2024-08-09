@@ -10,18 +10,6 @@ crons.interval(
     internal.symbol.refreshStaleSymbols,
 );
 
-// comment
-crons.cron(
-    "Refresh Prices",
-    "*/10 14-19 * * 1-5",
-    internal.quote.refreshPrice,
-);
-crons.cron(
-    "Refresh Prices market open",
-    "30,40,50 13 * * 1-5",
-    internal.quote.refreshPrice,
-);
-
 crons.cron(
     "Refresh Price Changes",
     "1 20 * * 1-5",
@@ -29,7 +17,12 @@ crons.cron(
 );
 crons.cron(
     "Refresh Full Quotes",
-    "2 20 * * 1-5",
+    "*/10 14-19 * * 1-5",
+    internal.quote.refreshFullQuotes,
+);
+crons.cron(
+    "Refresh Full Quotes market open",
+    "30,40,50 13 * * 1-5",
     internal.quote.refreshFullQuotes,
 );
 

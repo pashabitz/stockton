@@ -121,7 +121,11 @@ export const refreshFullQuotes = internalAction({
         const quotes = await getFullQuoteFromFmp(tickers);
         for (let i = 0; i < quotes.length; i++) {
             let quote = quotes[i];
-            await ctx.runMutation(internal.search.insertFullQuote, quote);
+            await ctx.scheduler.runAfter(0, internal.search.insertFullQuote, quote);
+            await ctx.scheduler.runAfter(0, internal.search.updateSearchPrice, {
+                price: quote.price,
+                text: quote.symbol,
+            })
         };
     }
 });
