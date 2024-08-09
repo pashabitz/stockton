@@ -25,5 +25,10 @@ crons.cron(
     "30,40,50 13 * * 1-5",
     internal.quote.refreshFullQuotes,
 );
+crons.cron(
+    "Refresh Full Quotes market close",
+    "0 20 * * 1-5",
+    internal.quote.refreshFullQuotes,
+);
 
 export default crons;
