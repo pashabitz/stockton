@@ -121,7 +121,7 @@ export const insertFullQuote = internalMutation({
     open: v.number(),
     previousClose: v.number(),
     eps: v.number(),
-    pe: v.number(),
+    pe: v.union(v.number(), v.null()),
     earningsAnnouncement: v.union(v.string(), v.null()),
     sharesOutstanding: v.number(),
     timestamp: v.number(),
