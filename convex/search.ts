@@ -153,7 +153,7 @@ export const updateBasicStats = internalMutation({
     // Get existing record
     const existingRecord = await ctx.db
       .query("symbol")
-      .filter((q) => q.eq(q.field("symbol"), lowercaseText))
+      .withIndex("by_symbol", (q) => q.eq("symbol", lowercaseText))
       .collect();
     if (existingRecord.length > 0) {
       const record = existingRecord[0];
