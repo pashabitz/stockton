@@ -57,9 +57,6 @@ export const getQuote = action({
             text: args.ticker,
             price: json.c,
         });
-        await ctx.scheduler.runAfter(0, api.quote.refreshBasicStatsIfStale, {
-            ticker: args.ticker
-        });
 
         await ctx.scheduler.runAfter(1, internal.quote.refreshFullQuoteIfStale, { 
             ticker: args.ticker 
@@ -83,6 +80,8 @@ export const getBasicStatsFromApi = action({
     }
 });
 
+// deprecated - not used
+// use refreshFullQuoteIfStale instead
 export const refreshBasicStatsIfStale = action({
     args: {ticker: v.string() },
     handler: async (ctx, args) => {

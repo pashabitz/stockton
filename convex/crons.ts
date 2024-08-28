@@ -4,12 +4,6 @@ import { refreshFullQuotes } from "./quote";
 
 const crons = cronJobs();
 
-crons.interval(
-    "Refresh Stats",
-    { hours: 8 },
-    internal.symbol.refreshStaleSymbols,
-);
-
 crons.cron(
     "Refresh Price Changes",
     "1 20 * * 1-5",

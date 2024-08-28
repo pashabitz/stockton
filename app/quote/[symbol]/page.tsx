@@ -50,10 +50,7 @@ function PriceChart(params: { prices: Array<any>}) {
     </LineChart>
 }
 export default function Page({ params }: { params: { symbol: string } }) {
-    const refresh = useAction(api.quote.refreshBasicStatsIfStale);
-    useEffect(() => {
-        refresh({ ticker: params.symbol });
-    }, []);
+
     const fullQuote = useQuery(api.search.getFullQuote, { symbol: params.symbol });
     const prices = useQuery(api.search.getSymbolPrices, { symbol: params.symbol });
     return <div>
